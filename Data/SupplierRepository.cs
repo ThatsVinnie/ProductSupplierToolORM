@@ -30,10 +30,10 @@ namespace Data
         // Métodos CRUD
         public bool Create(Supplier supplier)
         {
+            _context.Suppliers.Add(supplier); // Adicionando um novo objeto à lista de inserção
+
             try
-            {
-                _context.Suppliers.Add(supplier); // Adicionando um novo objeto à lista de inserção
-                
+            {   
                 _context.SaveChanges(); // Fazendo operação na base de dados
 
                 return true;

@@ -1,12 +1,20 @@
 ﻿using System.Data;
+using Data;
 using Domain;
 
 namespace Services
 {
     public class ProductServices
     {
+        private readonly ProductRepository _productRepository;
+
+        public ProductServices(ProductRepository productRepository)
+        {
+            _productRepository = productRepository;
+        }
+
         // Serviços para recuperar o sucesso ou falha nos métodos CRUD
-        public static bool AddProduct(string _name, string _description, string _price, string _qtde, int _idSupplier)
+        public bool AddProduct(string _name, string _description, string _price, string _qtde, int _idSupplier)
         {
 
             var product = new Product()
@@ -18,19 +26,19 @@ namespace Services
                 IdSupplier = _idSupplier
             };
 
-            if (Data.ProductRepository.Create(product))
+            if (_productRepository.Create(product))
             {
                 return true;
             }
             return false;
         }
 
-        public static DataTable DisplayProducts() 
+        public List<Product> DisplayProducts() 
         {
-            return Data.ProductRepository.Read();
+            return _productRepository.Read();
         }
 
-        public static bool UpdateProduct(string _name, string _description, string _price, string _qtde, int _idSupplier, int _idProduct)
+        public bool UpdateProduct(string _name, string _description, string _price, string _qtde, int _idSupplier, int _idProduct)
         {
             var product = new Product
             {
@@ -41,16 +49,16 @@ namespace Services
                 IdSupplier = _idSupplier
             };
 
-            if (Data.ProductRepository.Update(product, _idProduct))
+            if (_productRepository.Update(product, _idProduct))
             {
                 return true;
             }
             return false;
         }
 
-        public static bool DeleteProduct(int _idProduct)
+        public bool DeleteProduct(int _idProduct)
         {
-            if (Data.ProductRepository.Delete(_idProduct))
+            if (_productRepository.Delete(_idProduct))
             {
                 return true;
             }
