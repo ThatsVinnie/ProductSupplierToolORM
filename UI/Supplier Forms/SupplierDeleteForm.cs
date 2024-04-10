@@ -1,11 +1,13 @@
-﻿namespace UI.Supplier_Forms
+﻿using Services;
+
+namespace UI.Supplier_Forms
 {
     public partial class SupplierDeleteForm : Form
     {
         private int idSupplier;
         private string supplierName;
-
-        public SupplierDeleteForm(int _idSupplier, string _supplierName)
+        private readonly SupplierServices _supplierServices;
+        public SupplierDeleteForm(int _idSupplier, string _supplierName, SupplierServices supplierServices)
         {
             InitializeComponent();
 
@@ -13,11 +15,13 @@
             supplierName = _supplierName;
 
             txtTitle.Text = "Is it the supplier: " + supplierName + " you want to delete?";
+
+            _supplierServices = supplierServices;
         }
 
         private void btnAccept_Click(object sender, EventArgs e)
         {
-            if (Services.SupplierServices.DeleteSupplier(idSupplier))
+            if (_supplierServices.DeleteSupplier(idSupplier))
             {
                 MessageBox.Show("Supplier has been succesfully deleted!");
             }

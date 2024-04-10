@@ -1,12 +1,20 @@
-﻿using Domain;
+﻿using Data;
+using Domain;
 using System.Data;
 
 namespace Services
 {
     public class SupplierServices
     {
+        private readonly SupplierRepository _supplierRepository;
+
+        public SupplierServices(SupplierRepository supplierRepository)
+        {
+            _supplierRepository = supplierRepository;
+        }
+        
         // Serviços para recuperar o sucesso ou falha nos métodos CRUD
-        public static bool AddSupplier(string _name, string _cnpj, string _mail)
+        public bool AddSupplier(string _name, string _cnpj, string _mail)
         {
             var supplier = new Supplier
             {
@@ -15,7 +23,7 @@ namespace Services
                 Email = _mail
             };
 
-            if (Data.SupplierRepository.Create(supplier))
+            if (_supplierRepository.Create(supplier))
             {
                 return true;
             }
@@ -23,12 +31,12 @@ namespace Services
             return false;
         }
 
-        public static DataTable DisplaySuppliers()
+        public List<Supplier> DisplaySuppliers()
         {
-            return Data.SupplierRepository.Read();
+            return _supplierRepository.Read();
         }
 
-        public static bool UpdateSupplier(string _name, string _cnpj, string _mail, int _idSupplier)
+        public bool UpdateSupplier(string _name, string _cnpj, string _mail, int _idSupplier)
         {
             var newSupplier = new Supplier
             {
@@ -37,30 +45,25 @@ namespace Services
                 Email = _mail
             };
 
-            if (Data.SupplierRepository.Update(newSupplier, _idSupplier))
+            if (_supplierRepository.Update(newSupplier, _idSupplier))
             {
                 return true;
             }
             return false;
         }
 
-        public static bool DeleteSupplier(int _idSupplier)
+        public bool DeleteSupplier(int _idSupplier)
         {
-            if (Data.SupplierRepository.Delete(_idSupplier))
+            if (_supplierRepository.Delete(_idSupplier))
             {
                 return true;
             }
             return false;
         }
 
-        public static List<Supplier> FillComboBoxSupplier()
+        public bool ValidateSupplierCnpj(string _cnpj)
         {
-            return Data.SupplierRepository.FillComboBox();
-        }
-
-        public static bool ValidateSupplierCnpj(string _cnpj)
-        {
-            if (Data.SupplierRepository.ValidateSupplierCnpj(_cnpj))
+            if (_supplierRepository.ValidateSupplierCnpj(_cnpj))
             {
                 return true;
             }

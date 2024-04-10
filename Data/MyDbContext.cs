@@ -28,5 +28,14 @@ namespace Data
         {
             optionsBuilder.UseMySql(GetConnectionString(), new MySqlServerVersion(new Version(8, 0, 35)));
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Supplier)
+                .WithMany(f => f.Products)
+                .HasForeignKey(p => p.IdSupplier)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
     }
 }

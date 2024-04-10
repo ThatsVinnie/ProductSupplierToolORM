@@ -5,9 +5,12 @@ namespace UI
 {
     public partial class SupplierAddForm : Form
     {
-        public SupplierAddForm()
+        private readonly SupplierServices _supplierServices;
+
+        public SupplierAddForm(SupplierServices supplierServices)
         {
             InitializeComponent();
+            _supplierServices = supplierServices;
         }
 
         private void btnAddSupplier_Click(object sender, EventArgs e)
@@ -26,7 +29,7 @@ namespace UI
                 return;
             }
 
-            if (SupplierServices.AddSupplier(txtName.Text, txtCnpj.Text, txtMail.Text))
+            if (_supplierServices.AddSupplier(txtName.Text, txtCnpj.Text, txtMail.Text))
             {
                 MessageBox.Show("Supplier has been succesfully created");
             }
@@ -55,7 +58,7 @@ namespace UI
         // Método para validar duplicidade do CNPJ
         private bool ValidateSupplierCnpj()
         {
-            bool response = Services.SupplierServices.ValidateSupplierCnpj(txtCnpj.Text);
+            bool response = _supplierServices.ValidateSupplierCnpj(txtCnpj.Text);
             return response;
         }
     }

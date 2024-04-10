@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using Services;
+using System.Text.RegularExpressions;
 
 namespace UI
 {
@@ -7,7 +8,8 @@ namespace UI
         private int idSupplier;
         private string oldName;
         private string oldCnpj;
-        public SupplierEditForm(string _name, string _cnpj, string _mail, int _idSupplier)
+        private readonly SupplierServices _supplierServices;
+        public SupplierEditForm(string _name, string _cnpj, string _mail, int _idSupplier, SupplierServices supplierServices)
         {
             InitializeComponent();
 
@@ -18,6 +20,8 @@ namespace UI
             idSupplier = _idSupplier;
             oldName = _name;
             oldCnpj = _cnpj;
+
+            _supplierServices = supplierServices;
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)
@@ -40,7 +44,7 @@ namespace UI
                 return;
             }
 
-            if (Services.SupplierServices.UpdateSupplier(txtName.Text, txtCnpj.Text, txtMail.Text, idSupplier))
+            if (_supplierServices.UpdateSupplier(txtName.Text, txtCnpj.Text, txtMail.Text, idSupplier))
             {
                 MessageBox.Show("Supplier has been succesfully updated");
             }
@@ -67,7 +71,7 @@ namespace UI
 
         private bool ValidateSupplierCnpj()
         {
-            bool response = Services.SupplierServices.ValidateSupplierCnpj(txtCnpj.Text);
+            bool response = _supplierServices.ValidateSupplierCnpj(txtCnpj.Text);
             return response;
         }
     }
