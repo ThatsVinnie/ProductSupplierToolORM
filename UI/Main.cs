@@ -1,3 +1,4 @@
+using Services;
 using System.Data;
 using System.Windows.Forms;
 
@@ -9,12 +10,19 @@ namespace ProductSupplierTool
         private DataTable products;
         private DataTable suppliers;
 
-        public Main()
+        private readonly SupplierServices _supplierServices;
+        private readonly ProductServices _productServices;
+
+        public Main(SupplierServices supplierServices, ProductServices productServices)
         {
             InitializeComponent();
 
+            _supplierServices = supplierServices;
+            _productServices = productServices;
+
             //Exibindo a tabela de produtos
             ShowProductData();
+            
         }
 
         // Métodos para recuperar dados
@@ -75,14 +83,17 @@ namespace ProductSupplierTool
         private void SetProductData()
         {
             // Recebendo os dados do banco
-            products = Services.ProductServices.DisplayProducts();
+
+            var productsList = _productServices.DisplayProducts();
+
+            products = productsList.AsEnumerable().CopyToDataTable();
 
             // Exibindo dados para o cliente
             dataGridViewProducts.DataSource = products;
         }
         private void SetSupplierData()
         {
-            suppliers = Services.SupplierServices.DisplaySuppliers();
+            suppliers = _productServices.DisplayProducts();
 
             dataGridViewSuppliers.DataSource = suppliers;
         }
@@ -92,7 +103,7 @@ namespace ProductSupplierTool
         // Métodos CRUD Product
         private void btnAddDataProduct_Click(object sender, EventArgs e)
         {
-            var productAddForm = new UI.ProductAddForm();
+            var productAddForm = new UI.ProductAddForm(_productServices, _supplierServices);
 
             productAddForm.ShowDialog();
 
@@ -112,7 +123,7 @@ namespace ProductSupplierTool
             string qtde = selectedLine.Cells["Quantity"].Value.ToString();
             string supplier = selectedLine.Cells["Supplier"].Value.ToString();
 
-            var productEditForm = new UI.ProductEditForm(name, descr, price, qtde, supplier, Convert.ToInt32(idProduct));
+            var productEditForm = new UI.ProductEditForm(name, descr, price, qtde, supplier, Convert.ToInt32(idProduct), _supplierServices, _productServices);
 
             productEditForm.ShowDialog();
 
@@ -125,7 +136,7 @@ namespace ProductSupplierTool
             int idProduct = Convert.ToInt32(dataGridViewProducts.Rows[indexSelectedLine].Cells["ID"].Value);
             string productName = dataGridViewProducts.Rows[indexSelectedLine].Cells["Name"].Value.ToString();
 
-            var deleteForm = new UI.Product_Forms.ProductDeleteForm(idProduct, productName);
+            var deleteForm = new UI.Product_Forms.ProductDeleteForm(idProduct, productName, _productServices);
 
             deleteForm.ShowDialog();
 
@@ -137,7 +148,7 @@ namespace ProductSupplierTool
         // Métodos CRUD Supplier
         private void btnAddDataSupplier_Click(object sender, EventArgs e)
         {
-            var supplierCad = new UI.SupplierAddForm();
+            var supplierCad = new UI.SupplierAddForm(_supplierServices);
 
             supplierCad.ShowDialog();
 
@@ -154,7 +165,7 @@ namespace ProductSupplierTool
             string cnpj = selectedLine.Cells["Cnpj"].Value.ToString();
             string mail = selectedLine.Cells["Email"].Value.ToString();
 
-            var supplierEditForm = new UI.SupplierEditForm(name, cnpj, mail, idSupplier);
+            var supplierEditForm = new UI.SupplierEditForm(name, cnpj, mail, idSupplier, _supplierServices);
                 
             supplierEditForm.ShowDialog();
 
@@ -167,7 +178,7 @@ namespace ProductSupplierTool
             int idSupplier = Convert.ToInt32(dataGridViewSuppliers.Rows[indexSelectedLine].Cells["ID"].Value);
             string supplierName = dataGridViewSuppliers.Rows[indexSelectedLine].Cells["Name"].Value.ToString();
 
-            var deleteForm = new UI.Supplier_Forms.SupplierDeleteForm(idSupplier, supplierName);
+            var deleteForm = new UI.Supplier_Forms.SupplierDeleteForm(idSupplier, supplierName, _supplierServices);
 
             deleteForm.ShowDialog();
 
