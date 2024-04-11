@@ -1,15 +1,19 @@
-﻿using System.Text.RegularExpressions;
+﻿using Services;
+using System.Text.RegularExpressions;
 
 namespace UI
 {
     public partial class ProductEditForm : Form
     {
-        private List<Domain.Supplier> suppliersList = Services.SupplierServices.FillComboBoxSupplier();
+        private List<Domain.Supplier> suppliersList;
 
         private int idProduct;
         private string oldPrice;
         private string oldName;
         private string oldQtde;
+
+        private readonly ProductServices _productServices;
+        private readonly SupplierServices _supplierServices;
 
         public class ComboBoxItem
         {
@@ -22,9 +26,14 @@ namespace UI
             }
         }
 
-        public ProductEditForm(string _name, string _descr, string _price, string _qtde, string _supplierName, int _idProduct)
+        public ProductEditForm(string _name, string _descr, string _price, string _qtde, string _supplierName, int _idProduct, SupplierServices supplierServices, ProductServices productServices)
         {
             InitializeComponent();
+
+            _productServices = productServices;
+            _supplierServices = supplierServices;
+
+            suppliersList = _supplierServices.DisplaySuppliers();
 
             idProduct = _idProduct;
 
@@ -91,7 +100,7 @@ namespace UI
             {
                 int newSupplierId = (int)selectedSupplier.Value;
 
-                if (Services.ProductServices.UpdateProduct(txtName.Text, txtDescr.Text, txtPrice.Text, txtQtde.Text, newSupplierId, idProduct))
+                if (_productServices.UpdateProduct(txtName.Text, txtDescr.Text, txtPrice.Text, txtQtde.Text, newSupplierId, idProduct))
                 {
                     MessageBox.Show("Product has been succesfully updated");
                 }

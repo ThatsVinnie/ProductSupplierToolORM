@@ -1,11 +1,14 @@
-﻿namespace UI.Product_Forms
+﻿using Services;
+
+namespace UI.Product_Forms
 {
     public partial class ProductDeleteForm : Form
     {
         private int idProduct;
         private string productName;
+        private readonly ProductServices _productServices;
 
-        public ProductDeleteForm(int _idProduct, string _productName)
+        public ProductDeleteForm(int _idProduct, string _productName, ProductServices productServices)
         {
             InitializeComponent();
 
@@ -13,11 +16,13 @@
             productName = _productName;
 
             txtTitle.Text = "Is it the product: " + productName + " you want to delete?";
+
+            _productServices = productServices;
         }
 
         private void btnAccept_Click(object sender, EventArgs e)
         {
-            if (Services.ProductServices.DeleteProduct(idProduct))
+            if (_productServices.DeleteProduct(idProduct))
             {
                 MessageBox.Show("Product has been succesfully deleted!");
             }

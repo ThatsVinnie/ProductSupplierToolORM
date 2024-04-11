@@ -1,10 +1,15 @@
-﻿using System.Text.RegularExpressions;
+﻿using Services;
+using System.Text.RegularExpressions;
 
 namespace UI
 {
     public partial class ProductAddForm : Form
     {
-        private List<Domain.Supplier> suppliersList = Services.SupplierServices.FillComboBoxSupplier();
+        private readonly ProductServices _productServices;
+        private readonly SupplierServices _supplierServices;
+
+        private List<Domain.Supplier> suppliersList;
+        
         public class ComboBoxItem
         {
             public string Text { get; set; }
@@ -15,9 +20,14 @@ namespace UI
                 return Text;
             }
         }
-        public ProductAddForm()
+        public ProductAddForm(ProductServices productServices, SupplierServices supplierServices)
         {
             InitializeComponent();
+
+            _productServices = productServices;
+            _supplierServices = supplierServices;
+
+            suppliersList = _supplierServices.DisplaySuppliers();
 
             // Carregando dados do ComboBox de Suppliers
             foreach (var supplier in suppliersList)
@@ -58,7 +68,7 @@ namespace UI
             {
                 int supplierId = (int)selectedSupplier.Value;
 
-                if (Services.ProductServices.AddProduct(txtName.Text, txtDescr.Text, txtPrice.Text, txtQtde.Text, supplierId))
+                if (_productServices.AddProduct(txtName.Text, txtDescr.Text, txtPrice.Text, txtQtde.Text, supplierId))
                 {
                     MessageBox.Show("Product has been succesfully created");
                 }
