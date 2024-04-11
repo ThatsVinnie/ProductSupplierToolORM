@@ -1,16 +1,19 @@
 ﻿using System.Data;
 using Data;
 using Domain;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Services
 {
     public class ProductServices
     {
         private readonly ProductRepository _productRepository;
+        private readonly SupplierRepository _supplierRepository;
 
-        public ProductServices(ProductRepository productRepository)
+        public ProductServices(ProductRepository productRepository, SupplierRepository supplierRepository)
         {
             _productRepository = productRepository;
+            _supplierRepository = supplierRepository;
         }
 
         // Serviços para recuperar o sucesso ou falha nos métodos CRUD
@@ -23,7 +26,8 @@ namespace Services
                 Description = _description,
                 Price = Convert.ToDecimal(_price),
                 Quantity = Convert.ToInt32(_qtde),
-                IdSupplier = _idSupplier
+                IdSupplier = _idSupplier,
+                Supplier = _supplierRepository.GetSupplier(_idSupplier)
             };
 
             if (_productRepository.Create(product))
@@ -46,7 +50,8 @@ namespace Services
                 Description = _description,
                 Price = Convert.ToDecimal(_price),
                 Quantity = Convert.ToInt32(_qtde),
-                IdSupplier = _idSupplier
+                IdSupplier = _idSupplier,
+                Supplier = _supplierRepository.GetSupplier(_idSupplier)
             };
 
             if (_productRepository.Update(product, _idProduct))

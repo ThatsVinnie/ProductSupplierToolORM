@@ -17,6 +17,17 @@ namespace Data
             _context = context;
         }
 
+        // Método para recuperar supplier específico
+        public Supplier GetSupplier(int idSupplier)
+        {
+            var supplier = _context.Suppliers.Find(idSupplier);
+
+            if (supplier == null)
+            {
+                return null;
+            }
+            return supplier;
+        }
 
         // Método para validar duplicidade de CNPJ no sistema
         public bool ValidateSupplierCnpj(string cnpj)
