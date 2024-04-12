@@ -18,11 +18,13 @@ namespace ProductSupplierTool
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
 
-            // Recuperando objeto de configuração dos serviços
-            var serviceProvider = ConfigureServices();
+            
+            var serviceProvider = ConfigureServices(); // Recuperando objeto de configuração dos serviços
+
+            var mainForm = serviceProvider.GetRequiredService<Main>(); //Injetando as dependências no formulário principal da aplicação
 
             ApplicationConfiguration.Initialize();
-            Application.Run(new Main());
+            Application.Run(mainForm);
         }
 
         // Método de configuração dos serviços aplicando a injeção de dependência

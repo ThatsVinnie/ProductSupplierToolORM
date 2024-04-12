@@ -7,8 +7,8 @@ namespace ProductSupplierTool
     public partial class Main : Form
     {
 
-        private DataTable products;
-        private DataTable suppliers;
+        private DataTable productsTable;
+        private DataTable suppliersTable;
 
         private readonly SupplierServices _supplierServices;
         private readonly ProductServices _productServices;
@@ -82,20 +82,39 @@ namespace ProductSupplierTool
         }
         private void SetProductData()
         {
-            // Recebendo os dados do banco
+            var productsList = _productServices.DisplayProducts(); // Recebendo os dados do banco
 
-            var productsList = _productServices.DisplayProducts();
+            // Definição da datatable que servirá de base para gridview
+            productsTable.Columns.Add("Id", typeof(int));
+            productsTable.Columns.Add("Name", typeof(string));
+            productsTable.Columns.Add("Price", typeof(decimal));
+            productsTable.Columns.Add("Description", typeof(string));
+            productsTable.Columns.Add("Quantity", typeof (int));
+            productsTable.Columns.Add("IdSupplier", typeof(int));
 
-            products = productsList.AsEnumerable().CopyToDataTable();
+            foreach(var product in productsList ) // Atribuindo dados à datatable
+            {
+                productsTable.Rows.Add(product.Id, product.Name, product.Price, product.Description, product.Quantity, product.IdSupplier);
+            }
 
-            // Exibindo dados para o cliente
-            dataGridViewProducts.DataSource = products;
+            dataGridViewProducts.DataSource = productsTable; // Exibindo dados para o cliente
         }
         private void SetSupplierData()
         {
-            suppliers = _productServices.DisplayProducts();
+            var supplierList = _supplierServices.DisplaySuppliers(); // Recuperando lista com suppliers
 
-            dataGridViewSuppliers.DataSource = suppliers;
+            // Definição da datatable que servirá de base para gridview
+            suppliersTable.Columns.Add("Id", typeof(int));
+            suppliersTable.Columns.Add("Name", typeof(string));
+            suppliersTable.Columns.Add("Cnpj", typeof(string));
+            suppliersTable.Columns.Add("Email", typeof(string));
+
+            foreach(var supplier in supplierList) // Atribuindo dados à datatable
+            {
+                suppliersTable.Rows.Add(supplier.Id, supplier.Name, supplier.Cnpj, supplier.Email);
+            }
+
+            dataGridViewSuppliers.DataSource = suppliersTable; // Exibindo dados para o cliente
         }
 
 
@@ -247,14 +266,14 @@ namespace ProductSupplierTool
             if (!string.IsNullOrEmpty(filter))
             {
                 // Aplicar filtro
-                DataView dv = products.DefaultView;
+                DataView dv = productsTable.DefaultView;
                 dv.RowFilter = $"_name LIKE '%{filter}%'";
                 dataGridViewProducts.DataSource = dv;
             }
             else
             {
                 // Limpar filtro
-                dataGridViewProducts.DataSource = products;
+                dataGridViewProducts.DataSource = productsTable;
             }
         }
 
@@ -268,14 +287,14 @@ namespace ProductSupplierTool
             if (!string.IsNullOrEmpty(filter))
             {
                 // Aplicar filtro
-                DataView dv = suppliers.DefaultView;
+                DataView dv = suppliersTable.DefaultView;
                 dv.RowFilter = $"_name LIKE '%{filter}%'";
                 dataGridViewSuppliers.DataSource = dv;
             }
             else
             {
                 // Limpar filtro
-                dataGridViewSuppliers.DataSource = suppliers;
+                dataGridViewSuppliers.DataSource = suppliersTable;
             }
         }
     }
