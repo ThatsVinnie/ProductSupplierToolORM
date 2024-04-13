@@ -84,20 +84,22 @@ namespace ProductSupplierTool
         {
             var productsList = _productServices.DisplayProducts(); // Recebendo os dados do banco
 
-            // Definição da datatable que servirá de base para gridview
-            productsTable.Columns.Add("Id", typeof(int));
-            productsTable.Columns.Add("Name", typeof(string));
-            productsTable.Columns.Add("Price", typeof(decimal));
-            productsTable.Columns.Add("Description", typeof(string));
-            productsTable.Columns.Add("Quantity", typeof (int));
-            productsTable.Columns.Add("IdSupplier", typeof(int));
+            var tableEx = new DataTable();
 
-            foreach(var product in productsList ) // Atribuindo dados à datatable
+            // Definição da datatable que servirá de base para gridview
+            tableEx.Columns.Add("Id", typeof(int));
+            tableEx.Columns.Add("Name", typeof(string));
+            tableEx.Columns.Add("Price", typeof(decimal));
+            tableEx.Columns.Add("Description", typeof(string));
+            tableEx.Columns.Add("Quantity", typeof (int));
+            tableEx.Columns.Add("IdSupplier", typeof(int));
+
+            foreach (var product in productsList) // Atribuindo dados à datatable
             {
-                productsTable.Rows.Add(product.Id, product.Name, product.Price, product.Description, product.Quantity, product.IdSupplier);
+                tableEx.Rows.Add(product.Id, product.Name, product.Price, product.Description, product.Quantity, product.IdSupplier);
             }
 
-            dataGridViewProducts.DataSource = productsTable; // Exibindo dados para o cliente
+            dataGridViewProducts.DataSource = tableEx; // Exibindo dados para o cliente
         }
         private void SetSupplierData()
         {
